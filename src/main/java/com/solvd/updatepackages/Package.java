@@ -1,15 +1,18 @@
 package com.solvd.updatepackages;
 
-public enum Packages {
+import java.util.Arrays;
+import java.util.List;
+
+public enum Package {
 
     IMAGE("android/media/Image", "com/solvd/mock/Image"),
     IMAGE_READER("android/media/ImageReader", "com/solvd/mock/ImageReader"),
     BYTE_BUFFER("java/nio/ByteBuffer", "com/solvd/mock/ByteBuffer");
 
-    private String originalPackage;
-    private String mockPackage;
+    private final String originalPackage;
+    private final String mockPackage;
 
-    private Packages(String originalPackage, String mockPackage) {
+    Package(String originalPackage, String mockPackage) {
         this.originalPackage = originalPackage;
         this.mockPackage = mockPackage;
     }
@@ -20,5 +23,9 @@ public enum Packages {
 
     String getMockPackage() {
         return mockPackage;
+    }
+
+    public static List<Package> getPackageList() {
+        return Arrays.stream(values()).toList();
     }
 }
