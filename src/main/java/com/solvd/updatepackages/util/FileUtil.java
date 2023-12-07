@@ -15,7 +15,7 @@ import java.util.List;
 public class FileUtil {
 
     private static final String UTF_8 = "UTF-8";
-    
+
     public static void mockFiles() {
         Collection<File> files = collectSmaliFiles();
         for (File file : files) {
