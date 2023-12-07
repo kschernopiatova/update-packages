@@ -51,8 +51,8 @@ public class FileUtil {
     }
 
     private static File getManifestFile() {
-        Path currentRelativePath = Paths.get("");
-        String path = currentRelativePath.toAbsolutePath().toString();
+        Path currentRelativePath = Paths.get("").toAbsolutePath();
+        String path = currentRelativePath.toString();
         Collection<File> foundFiles = FileUtils.listFiles(new File(path), new String[] { "xml" }, false);
         while (findManifest(foundFiles) == null) {
             currentRelativePath = currentRelativePath.getParent();
