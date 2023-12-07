@@ -1,5 +1,7 @@
-package com.solvd.updatepackages;
+package com.solvd.updatepackages.util;
 
+import com.solvd.updatepackages.enums.Package;
+import com.solvd.updatepackages.enums.Permission;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -12,24 +14,27 @@ import java.util.List;
 
 public class FileUtil {
 
-    public static Collection<File> collectSmaliFiles() {
-        Path currentRelativePath = Paths.get("");
-        String s = currentRelativePath.toAbsolutePath().toString();
-        return FileUtils.listFiles(new File(s), new String[] {"smali"}, true);
-    }
-
-    public static void updateFiles(Collection<File> files) {
+    private static final String UTF_8 = "UTF-8";
+    
+    public static void mockFiles() {
+        Collection<File> files = collectSmaliFiles();
         for (File file : files) {
             String fileContext;
             try {
-                fileContext = FileUtils.readFileToString(file, "UTF-8");
+                fileContext = FileUtils.readFileToString(file, UTF_8);
                 fileContext = replacePackages(fileContext);
-                FileUtils.write(file, fileContext, "UTF-8");
+                FileUtils.write(file, fileContext, UTF_8);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
         updateManifest();
+    }
+
+    private static Collection<File> collectSmaliFiles() {
+        Path currentRelativePath = Paths.get("");
+        String s = currentRelativePath.toAbsolutePath().toString();
+        return FileUtils.listFiles(new File(s), new String[] { "smali" }, true);
     }
 
     private static String replacePackages(String fileContext) {
@@ -46,14 +51,13 @@ public class FileUtil {
     }
 
     private static File getManifestFile() {
-        Path currentRelativePath = Paths.get("").toAbsolutePath();
-        String s = currentRelativePath.toString();
-        Collection<File> foundFiles;
-        foundFiles = FileUtils.listFiles(new File(s), new String[] {"xml"}, false);
+        Path currentRelativePath = Paths.get("");
+        String path = currentRelativePath.toAbsolutePath().toString();
+        Collection<File> foundFiles = FileUtils.listFiles(new File(path), new String[] { "xml" }, false);
         while (findManifest(foundFiles) == null) {
             currentRelativePath = currentRelativePath.getParent();
-            s = currentRelativePath.toAbsolutePath().toString();
-            foundFiles = FileUtils.listFiles(new File(s), new String[] {"xml"}, false);
+            path = currentRelativePath.toAbsolutePath().toString();
+            foundFiles = FileUtils.listFiles(new File(path), new String[] { "xml" }, false);
         }
         return findManifest(foundFiles);
     }
@@ -69,11 +73,12 @@ public class FileUtil {
     private static void checkPermissions(File file) {
         String fileContext;
         try {
-            fileContext = FileUtils.readFileToString(file, "UTF-8");
+            fileContext = FileUtils.readFileToString(file, UTF_8);
             List<Permission> permissions = Permission.getPermissionsList();
             for (Permission permission : permissions) {
                 if (!fileContext.contains(permission.getPermission())) {
-                    addPermissionTag(file, permission);
+                    fileContext = addPermissionTag(fileContext, permission);
+                    FileUtils.write(file, fileContext, UTF_8);
                 }
             }
         } catch (IOException e) {
@@ -81,16 +86,10 @@ public class FileUtil {
         }
     }
 
-    private static void addPermissionTag(File file, Permission permission) {
-        String fileContext;
-        try {
-            fileContext = FileUtils.readFileToString(file, "UTF-8");
-            int index = StringUtils.indexOf(fileContext, "<app");
-            fileContext = fileContext.substring(0, index) + permission.getPermissionTag()
-                    + fileContext.substring(index);
-            FileUtils.write(file, fileContext, "UTF-8");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    private static String addPermissionTag(String fileContext, Permission permission) {
+        int index = StringUtils.indexOf(fileContext, "<app");
+        fileContext = fileContext.substring(0, index) + permission.getPermissionTag()
+                + fileContext.substring(index);
+        return fileContext;
     }
 }

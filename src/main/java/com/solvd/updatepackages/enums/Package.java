@@ -1,4 +1,4 @@
-package com.solvd.updatepackages;
+package com.solvd.updatepackages.enums;
 
 import java.util.Arrays;
 import java.util.List;
@@ -17,11 +17,11 @@ public enum Package {
         this.mockPackage = mockPackage;
     }
 
-    String getOriginalPackage() {
+    public String getOriginalPackage() {
         return originalPackage;
     }
 
-    String getMockPackage() {
+    public String getMockPackage() {
         return mockPackage;
     }
 

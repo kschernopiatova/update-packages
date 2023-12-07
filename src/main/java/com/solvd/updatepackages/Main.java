@@ -1,11 +1,9 @@
 package com.solvd.updatepackages;
 
-import java.io.File;
-import java.util.Collection;
+import com.solvd.updatepackages.util.FileUtil;
 
 public class Main {
     public static void main(String[] args) {
-        Collection<File> files = FileUtil.collectSmaliFiles();
-        FileUtil.updateFiles(files);
+        FileUtil.mockFiles();
     }
 }

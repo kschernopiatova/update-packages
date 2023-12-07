@@ -1,4 +1,4 @@
-package com.solvd.updatepackages;
+package com.solvd.updatepackages.enums;
 
 import java.util.Arrays;
 import java.util.List;
